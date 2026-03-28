@@ -138,6 +138,20 @@ function HomeContent() {
     setActiveTag((cur) => (cur === tag ? null : tag));
   }, []);
 
+  const composeDefaultDate = useMemo(
+    () =>
+      selectedCalendarDate ?? new Date().toISOString().slice(0, 10),
+    [selectedCalendarDate],
+  );
+
+  const composeDefaultCategory: DiaryCategoryId =
+    activeCategoryKey === "all" ? "personal" : activeCategoryKey;
+
+  const handleComposeSave = useCallback((entry: JournalEntry) => {
+    setEntries((prev) => [entry, ...prev]);
+    setSelectedId(entry.id);
+  }, []);
+
   if (!isReady || !user) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
@@ -182,6 +196,10 @@ function HomeContent() {
                 entry={selected}
                 onDelete={handleDelete}
                 showEditLink={false}
+                composeUserId={user.id}
+                composeDefaultDate={composeDefaultDate}
+                composeDefaultCategory={composeDefaultCategory}
+                onComposeSave={handleComposeSave}
               />
             </section>
           </div>

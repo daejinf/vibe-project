@@ -10,6 +10,9 @@ const EMOTIONS: { emoji: string; label: string }[] = [
   { emoji: "💬", label: "연결" },
   { emoji: "📚", label: "몰입" },
   { emoji: "❄️", label: "고요" },
+  { emoji: "🥰", label: "따뜻함" },
+  { emoji: "😤", label: "답답" },
+  { emoji: "🤔", label: "고민" },
 ];
 
 export function EmotionSelector({

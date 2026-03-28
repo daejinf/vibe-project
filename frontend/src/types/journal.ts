@@ -1,6 +1,13 @@
 import type { DiaryCategoryId } from "@/constants/diaryCategories";
 
-export type WeatherId = "sunny" | "cloudy" | "rain" | "snow" | "wind";
+export type WeatherId =
+  | "sunny"
+  | "cloudy"
+  | "rain"
+  | "snow"
+  | "wind"
+  | "fog"
+  | "storm";
 
 export interface JournalEntry {
   id: string;
