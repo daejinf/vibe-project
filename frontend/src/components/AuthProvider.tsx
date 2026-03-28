@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import type { User } from "@/types/user";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 interface AuthContextType {
   user: User | null;
@@ -64,6 +64,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) {
+      setIsReady(true);
+      return;
+    }
+
     let cancelled = false;
 
     void supabase.auth.getSession().then(({ data: { session } }) => {
@@ -85,6 +90,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
+    if (!isSupabaseConfigured()) {
+      return {
+        error: "Supabase 환경 변수가 설정되지 않았습니다. NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY 를 확인하세요.",
+      };
+    }
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -102,6 +112,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signup = useCallback(async (email: string, password: string) => {
+    if (!isSupabaseConfigured()) {
+      return {
+        error: "Supabase 환경 변수가 설정되지 않았습니다. NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY 를 확인하세요.",
+      };
+    }
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) {
       return { error: formatAuthError(error.message) };
@@ -114,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
+    if (!isSupabaseConfigured()) return;
     await supabase.auth.signOut();
   }, []);
 
