@@ -1,0 +1,17 @@
+---
+description: TypeScript 및 React 컴포넌트 — 타입·서버/클라이언트 경계
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# TypeScript 및 컴포넌트
+
+## 반드시 할 것
+
+- 새 **컴포넌트·유틸·설정**은 **TypeScript** (`.ts`, `.tsx`)로 작성하고, 타입을 **명시적으로** 다룬다.
+- **서버 컴포넌트를 기본**으로 둔다. **`use client`**는 브라우저 API, React 훅, 이벤트 핸들러 등 **클라이언트 전용 경계**에만 붙인다.
+
+## 하면 안 되는 것
+
+- **`any` 남용**이나 **`@ts-ignore` 무분별 사용**으로 타입 검사를 무력화하지 않는다.
+- 기본으로 **순수 JavaScript만 있는 새 파일** (`.js`/`.jsx`)을 추가하지 않는다.

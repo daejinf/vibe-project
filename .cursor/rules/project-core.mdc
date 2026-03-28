@@ -1,0 +1,21 @@
+---
+description: 프로젝트 전체 핵심 규칙 — 스택 고정·수정 범위·AGENTS.md와의 관계
+alwaysApply: true
+---
+
+# 프로젝트 핵심 규칙
+
+이 프로젝트는 **Next.js App Router** + **TypeScript** + **Tailwind CSS** + **Supabase**만 사용한다. 상세는 루트의 `AGENTS.md`를 참고한다.
+
+## 반드시 할 것
+
+- 요청된 범위 안에서만 수정하고, 기존 **네이밍·폴더 구조·import 스타일**이 있으면 맞춘다.
+- Next.js **공식 권장 패턴**을 따른다.
+
+## 하면 안 되는 것
+
+- **Pages Router** (`pages/`, `getServerSideProps` 등)로 새 기능을 추가하지 않는다.
+- **Prisma·Firebase·Mongo** 등 문서에 없는 DB를 임의로 도입하지 않는다.
+- **CSS Modules·Styled Components** 등으로 스타일 스택을 새로 바꾸지 않는다. (이미 있으면 제거 요청 없이 유지만.)
+- 새 코드를 **`.js`/`.jsx`만**으로 추가하지 않는다. TypeScript를 쓴다.
+- 사용자가 요청하지 않은 **대규모 리팩터·불필요한 파일·문서 남발**을 하지 않는다.

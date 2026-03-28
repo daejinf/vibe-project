@@ -1,0 +1,16 @@
+---
+description: Tailwind CSS — 유틸리티 우선·인라인 스타일 최소화
+globs: "**/*.tsx"
+alwaysApply: false
+---
+
+# 스타일 (Tailwind CSS)
+
+## 반드시 할 것
+
+- UI 스타일은 **Tailwind 유틸리티 클래스**를 우선 사용한다.
+- Tailwind로 표현하기 어려운 경우에만 **`style` 인라인**을 **최소한**으로 사용한다.
+
+## 하면 안 되는 것
+
+- **CSS Modules·Styled Components·emotion** 등으로 스타일 스택을 **새로 도입**하지 않는다. (프로젝트에 이미 있다면, 사용자가 제거를 요청하지 않는 한 건드리지 않고 유지한다.)
