@@ -27,6 +27,7 @@ import {
   type DiaryCategoryId,
   normalizeCategory,
 } from "@/constants/diaryCategories";
+import { collectTagSuggestionsFromEntries } from "@/lib/journalTags";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -42,6 +43,7 @@ function HomeContent() {
     string | null
   >(null);
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [forceCompose, setForceCompose] = useState(false);
 
   const catParam = searchParams.get("cat");
   const categoryFilter: DiaryCategoryId | null = useMemo(() => {
@@ -88,6 +90,11 @@ function HomeContent() {
 
   const streaks = useMemo(() => computeStreaks(entries), [entries]);
 
+  const tagSuggestions = useMemo(
+    () => collectTagSuggestionsFromEntries(entries),
+    [entries],
+  );
+
   const stats = useMemo(() => {
     const byCategory: Record<DiaryCategoryId, number> = {
       personal: 0,
@@ -122,10 +129,10 @@ function HomeContent() {
   }, [baseList, selectedId]);
 
   useEffect(() => {
-    if (baseList.length > 0 && selectedId === null) {
+    if (baseList.length > 0 && selectedId === null && !forceCompose) {
       setSelectedId(baseList[0].id);
     }
-  }, [baseList, selectedId]);
+  }, [baseList, selectedId, forceCompose]);
 
   const selected = baseList.find((e) => e.id === selectedId) ?? null;
 
@@ -148,8 +155,14 @@ function HomeContent() {
     activeCategoryKey === "all" ? "personal" : activeCategoryKey;
 
   const handleComposeSave = useCallback((entry: JournalEntry) => {
+    setForceCompose(false);
     setEntries((prev) => [entry, ...prev]);
     setSelectedId(entry.id);
+  }, []);
+
+  const handleSelectEntry = useCallback((id: string) => {
+    setForceCompose(false);
+    setSelectedId(id);
   }, []);
 
   if (!isReady || !user) {
@@ -181,7 +194,7 @@ function HomeContent() {
                 <DiaryList
                   groups={groups}
                   selectedId={selectedId}
-                  onSelect={setSelectedId}
+                  onSelect={handleSelectEntry}
                   activeCategoryKey={activeCategoryKey}
                   categoryCounts={stats.byCategory}
                   totalCount={stats.total}
@@ -191,7 +204,7 @@ function HomeContent() {
                 />
               </div>
             </section>
-            <section className="flex min-h-[45vh] min-w-0 flex-1 flex-col md:min-h-0 md:overflow-hidden">
+            <section className="relative flex min-h-[45vh] min-w-0 flex-1 flex-col pb-20 md:min-h-0 md:overflow-hidden md:pb-0">
               <DiaryDetail
                 entry={selected}
                 onDelete={handleDelete}
@@ -200,7 +213,21 @@ function HomeContent() {
                 composeDefaultDate={composeDefaultDate}
                 composeDefaultCategory={composeDefaultCategory}
                 onComposeSave={handleComposeSave}
+                activeTag={activeTag}
+                onTagClick={handleTagClick}
+                tagSuggestions={tagSuggestions}
               />
+              <button
+                type="button"
+                onClick={() => {
+                  setForceCompose(true);
+                  setSelectedId(null);
+                }}
+                className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-violet-600 text-2xl font-light text-white shadow-lg shadow-violet-400/40 transition hover:bg-violet-500 hover:shadow-xl md:bottom-8 md:right-8"
+                aria-label="새 기록 쓰기"
+              >
+                +
+              </button>
             </section>
           </div>
         </div>

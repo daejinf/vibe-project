@@ -11,6 +11,7 @@ import { CategorySelect } from "./CategorySelect";
 import { EmotionSelector } from "./EmotionSelector";
 import { WeatherSelector } from "./WeatherSelector";
 import { TagBadge } from "./TagBadge";
+import { TagInput } from "./TagInput";
 
 export function DiaryDetail({
   entry,
@@ -21,6 +22,9 @@ export function DiaryDetail({
   composeDefaultDate,
   composeDefaultCategory,
   onComposeSave,
+  activeTag,
+  onTagClick,
+  tagSuggestions,
 }: {
   entry: JournalEntry | null;
   onDelete: (id: string) => void | Promise<void>;
@@ -30,6 +34,9 @@ export function DiaryDetail({
   composeDefaultDate?: string;
   composeDefaultCategory?: DiaryCategoryId;
   onComposeSave?: (entry: JournalEntry) => void;
+  activeTag?: string | null;
+  onTagClick?: (tag: string) => void;
+  tagSuggestions?: string[];
 }) {
   if (!entry) {
     if (composeUserId && onComposeSave && composeDefaultDate) {
@@ -39,6 +46,7 @@ export function DiaryDetail({
           defaultDate={composeDefaultDate}
           defaultCategory={composeDefaultCategory ?? "personal"}
           onSave={onComposeSave}
+          tagSuggestions={tagSuggestions}
         />
       );
     }
@@ -68,7 +76,18 @@ export function DiaryDetail({
             {getCategoryLabel(entry.category)}
           </span>
           {entry.tags.map((t) => (
-            <TagBadge key={t} tag={t} />
+            <TagBadge
+              key={t}
+              tag={t}
+              onClick={
+                onTagClick
+                  ? () => {
+                      onTagClick(t);
+                    }
+                  : undefined
+              }
+              active={activeTag === t}
+            />
           ))}
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-4">
@@ -127,11 +146,13 @@ function DiaryInlineCompose({
   defaultDate,
   defaultCategory,
   onSave,
+  tagSuggestions,
 }: {
   userId: string;
   defaultDate: string;
   defaultCategory: DiaryCategoryId;
   onSave: (entry: JournalEntry) => void;
+  tagSuggestions?: string[];
 }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -141,6 +162,7 @@ function DiaryInlineCompose({
   const [emotion, setEmotion] = useState("🌙");
   const [weather, setWeather] = useState<WeatherId>("cloudy");
   const [satisfaction, setSatisfaction] = useState<1 | 2 | 3 | 4 | 5>(4);
+  const [tags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
     setDate(defaultDate);
@@ -158,6 +180,7 @@ function DiaryInlineCompose({
     setEmotion("🌙");
     setWeather("cloudy");
     setSatisfaction(4);
+    setTags([]);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -177,7 +200,7 @@ function DiaryInlineCompose({
       emotion,
       weather,
       satisfaction,
-      tags: [],
+      tags,
       created_at: now,
       updated_at: now,
     };
@@ -242,6 +265,21 @@ function DiaryInlineCompose({
             날씨
           </p>
           <WeatherSelector value={weather} onChange={setWeather} />
+        </div>
+
+        <div>
+          <label
+            htmlFor="inline-diary-tags"
+            className="mb-1 block text-xs font-semibold uppercase tracking-wider text-violet-400"
+          >
+            태그
+          </label>
+          <TagInput
+            id="inline-diary-tags"
+            value={tags}
+            onChange={setTags}
+            suggestions={tagSuggestions}
+          />
         </div>
 
         <div>
