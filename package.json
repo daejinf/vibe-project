@@ -1,0 +1,11 @@
+{
+  "name": "vibe-project",
+  "private": true,
+  "description": "Set Vercel Root Directory to frontend. Root scripts are a fallback if the repo root is used as the project root.",
+  "scripts": {
+    "postinstall": "npm ci --prefix ./frontend",
+    "build": "npm run build --prefix ./frontend",
+    "dev": "npm run dev --prefix ./frontend",
+    "lint": "npm run lint --prefix ./frontend"
+  }
+}
